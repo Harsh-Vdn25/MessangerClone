@@ -10,17 +10,19 @@ interface InputProps{
     id: string;
     type?: string;
     required?: boolean;
+    disabled?: boolean;
     register: UseFormRegister<FieldErrors>;
     errors: FieldErrors;
 }
-export const Input:FC<InputProps> = ({
+export const Input= ({
     label,
     id,
     type,
     required,
     register,
-    errors
-}) => {
+    errors,
+    disabled
+}:InputProps) => {
   return (
     <div>
         <label htmlFor={id}
@@ -36,6 +38,7 @@ export const Input:FC<InputProps> = ({
                 id={id}
                 type={type}
                 autoComplete={id}
+                disabled={disabled}
                 {...register(id,{ required })}
                 className={clsx(`
                     form-input

@@ -8,13 +8,13 @@ interface ButtonProps {
     disabled?: boolean;
     onClick?: ()=>void;
 }
-export const Button:FC<ButtonProps>=({
+export const Button=({
     type,
     children,
     secondary,
     disabled,
     onClick,
-})=>{
+}:ButtonProps)=>{
     return (
         <button
         onClick={onClick}
@@ -33,7 +33,7 @@ export const Button:FC<ButtonProps>=({
             focus-visible:outline-offset-2
             cursor-pointer
         `,
-        disabled && 'opacity cursor-default',
+        disabled && 'opacity-50 cursor-default',
         secondary ? "text-gray-900": "text-white" ,
         !secondary && "bg-sky-500 hover:bg-sky-600 focus-visible:outline-sky-600")}>
             {children}

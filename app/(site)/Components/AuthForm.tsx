@@ -69,6 +69,7 @@ export const AuthForm = () => {
                     register={register} 
                     id="name" 
                     errors={errors}
+                    disabled={isLoading}
                 />
                 )}
                 <Input 
@@ -76,16 +77,19 @@ export const AuthForm = () => {
                     register={register} 
                     id="email" 
                     errors={errors}
+                    disabled={isLoading}
                 />
                 <Input 
                     label="Password" 
                     register={register} 
                     id="password" 
                     errors={errors}
+                    disabled={isLoading}
                 />
                 <div>
                     <Button //No on submit needed cuz you have given the type 
                         onClick= {onSubmit}
+                        disabled= {isLoading}
                         type= 'submit'
                     >
                         { variant === "LOGIN" ? "Sign in" : "Register"}
