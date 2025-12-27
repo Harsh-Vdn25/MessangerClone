@@ -8,11 +8,20 @@ import {AuthSocialButton} from './AuthSocialButton'
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 export const AuthForm = () => {
+    const session = useSession();
+    const router = useRouter();
     const [variant,setVariant] = useState<Variant>('LOGIN');
     const [isLoading,setIsLoading] = useState(false);
 
+    useEffect(()=>{
+        if(session.status === 'authenticated'){
+            console.log("Authenticated");
+            router.push('/users');
+        }
+    },[session.status]);
     function changeEntryType(){
         if( variant === "LOGIN" ){
             setVariant("REGISTER");
@@ -41,8 +50,6 @@ export const AuthForm = () => {
                 toast.error("Something went wrong")
                 setIsLoading(false);
             })
-            
-            console.log(res);
         }
         if( variant === "LOGIN"){
             signIn('credentials',{
@@ -56,6 +63,7 @@ export const AuthForm = () => {
 
                 if(callback?.ok && !callback.error){
                     toast.success("Logged in!");
+                    router.push('/users');
                 }
             })
             .finally(()=>setIsLoading(false))
@@ -63,7 +71,17 @@ export const AuthForm = () => {
     }
     const socialAction=(action:string)=>{
         setIsLoading(true);
-
+        signIn(action,{
+            redirect:false
+        }).then((callback)=>{
+            if(callback?.error){
+                toast.error("Invalid credentials");
+            }
+            if(callback?.ok && !callback.error){
+                toast.success("Logged in");
+                router.push('/users');
+            }
+        }).finally(()=>setIsLoading(false))
     }
     return (
         <div 

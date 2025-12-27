@@ -4,8 +4,9 @@ import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
-
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 export const authOptions: AuthOptions ={
+    adapter:PrismaAdapter(prisma),
     providers: [
         GithubProvider({
             clientId: process.env.GITHUB_ID as string,
@@ -30,10 +31,10 @@ export const authOptions: AuthOptions ={
                         email:credentials.email
                     }
                 })
-                if(!user || !user?.password){//if the user registered using google or github then no password will be available in the DB
+                if(!user ||!user.hashedPassword){//if the user registered using google or github then no password will be available in the DB
                     throw new Error("Invalid credentials");
                 }
-                const isCorrectPassword= await bcrypt.compare(credentials.password,user.password);
+                const isCorrectPassword= await bcrypt.compare(credentials.password,user.hashedPassword);
                 if(!isCorrectPassword){
                     throw new Error("Invalid credentials");
                 }
