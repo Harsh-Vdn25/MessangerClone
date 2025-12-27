@@ -5,7 +5,10 @@ import {  FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@/app/components/Input";
 import {Button} from '@/app/components/Button'
 import {AuthSocialButton} from './AuthSocialButton'
-import { BsFacebook, BsGithub, BsGoogle } from "react-icons/bs";
+import { BsGithub, BsGoogle } from "react-icons/bs";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
 export const AuthForm = () => {
     const [variant,setVariant] = useState<Variant>('LOGIN');
     const [isLoading,setIsLoading] = useState(false);
@@ -30,13 +33,32 @@ export const AuthForm = () => {
             password : ""
         }
     })
-    const onSubmit:SubmitHandler<FieldValues> = (data) =>{
+    const onSubmit:SubmitHandler<FieldValues> = async(data) =>{
         setIsLoading(true);
         if( variant === "REGISTER" ){
+            const res=await axios.post('/api/register',data)
+            .catch((err)=>{
+                toast.error("Something went wrong")
+                setIsLoading(false);
+            })
             
+            console.log(res);
         }
         if( variant === "LOGIN"){
-            
+            signIn('credentials',{
+                ...data,
+                redirect:false
+            })
+            .then((callback)=>{
+                if(callback?.error){
+                    toast.error("Invalid credentials");
+                }
+
+                if(callback?.ok && !callback.error){
+                    toast.success("Logged in!");
+                }
+            })
+            .finally(()=>setIsLoading(false))
         }
     }
     const socialAction=(action:string)=>{
@@ -76,6 +98,7 @@ export const AuthForm = () => {
                     label="Email" 
                     register={register} 
                     id="email" 
+                    type="text"
                     errors={errors}
                     disabled={isLoading}
                 />
@@ -83,12 +106,12 @@ export const AuthForm = () => {
                     label="Password" 
                     register={register} 
                     id="password" 
+                    type="password"
                     errors={errors}
                     disabled={isLoading}
                 />
                 <div>
                     <Button //No on submit needed cuz you have given the type 
-                        onClick= {onSubmit}
                         disabled= {isLoading}
                         type= 'submit'
                     >

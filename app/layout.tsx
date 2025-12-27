@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToasterContext } from "./context/ToasterContext";
 
 
 export const metadata: Metadata = {
@@ -14,8 +15,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-      >
+      <body>
+        <ToasterContext/>
         {children}
       </body>
     </html>
