@@ -46,6 +46,7 @@ export const AuthForm = () => {
         setIsLoading(true);
         if( variant === "REGISTER" ){
             const res=await axios.post('/api/register',data)
+            .then(()=>signIn('credentials',data))
             .catch((err)=>{
                 toast.error("Something went wrong")
                 setIsLoading(false);
