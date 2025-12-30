@@ -3,7 +3,13 @@
 import { useState } from "react";
 import useRoutes from "../../hooks/useRoute";
 import DesktopItem from "./DesktopItem";
-export const DesktopSidebar=()=>{
+import { User } from "@prisma/client";
+import { Avatar } from "../Avatar";
+
+export interface DesktopSidebarProps {
+  currentUser: User;
+}
+export const DesktopSidebar=({currentUser}:DesktopSidebarProps)=>{
     const routes = useRoutes();
     const [isOpen,setIsOpen] = useState(false);
     return (
@@ -69,6 +75,7 @@ export const DesktopSidebar=()=>{
               transition
             "
           >
+            <Avatar user={currentUser}/>
           </div>
         </nav>
         </div>
